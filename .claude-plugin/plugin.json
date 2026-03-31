@@ -1,0 +1,11 @@
+{
+  "name": "notify-sounds",
+  "version": "1.0.0",
+  "description": "Plays system sounds when Claude finishes work or needs permission",
+  "author": {
+    "name": "AxGord",
+    "email": "axgord@gmail.com",
+    "url": "https://github.com/AxGord"
+  },
+  "license": "MIT"
+}
