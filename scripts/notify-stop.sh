@@ -1,5 +1,10 @@
 #!/bin/bash
-cat > /dev/null
+INPUT=$(cat)
+
+# Skip sound for sub-agent completions
+if echo "$INPUT" | grep -q '"agent_id"'; then
+  exit 0
+fi
 
 case "$(uname -s)" in
   Darwin)
