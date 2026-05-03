@@ -2,7 +2,7 @@
 INPUT=$(cat)
 
 # Skip sound for sub-agent completions
-if echo "$INPUT" | grep -q '"agent_id"'; then
+if echo "$INPUT" | grep -q '"hook_event_name":[[:space:]]*"SubagentStop"'; then
   exit 0
 fi
 
