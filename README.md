@@ -39,9 +39,10 @@ The plugin uses Claude Code [hooks](https://docs.anthropic.com/en/docs/claude-co
 The stop sound is skipped when work is not actually finished:
 
 - sub-agent completions (`SubagentStop`)
-- background tasks or agents started during the current turn and still running when it ends (`background_tasks` in the Stop hook input, Claude Code v2.1.145+; on older versions the sound always plays)
+- background agent tasks (subagent/workflow) started during the current turn and still running when it ends — they re-invoke Claude on completion, so the real finish comes later (`background_tasks` in the Stop hook input, Claude Code v2.1.145+; on older versions the sound always plays)
+- a background shell command launched moments before the turn ends ("started it and now waiting for it") — detected by the task output file being younger than a grace window, 30 seconds by default (`CLAUDE_NOTIFY_SOUNDS_GRACE` env var overrides; `0` disables)
 
-Long-lived background processes (dev servers, watchers) do not silence the sound: task ids seen at a previous Stop are remembered in a per-session state file under the system temp directory, and only a task appearing for the first time suppresses the sound.
+Long-lived background shell processes (dev servers, watchers) do not silence the sound — a turn that ends long after starting one counts as finished. Agent task ids seen at a previous Stop are remembered in a per-session state file under the system temp directory; only an agent task appearing for the first time suppresses the sound. Any detection failure means the sound plays.
 
 ### Platform Details
 
