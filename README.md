@@ -36,6 +36,11 @@ The plugin uses Claude Code [hooks](https://docs.anthropic.com/en/docs/claude-co
 | `Stop` | Warning tone | Claude finishes working |
 | `Notification` (permission_prompt) | Ping / message tone | Claude needs permission to proceed |
 
+The stop sound is skipped when work is not actually finished:
+
+- sub-agent completions (`SubagentStop`)
+- background tasks or agents still running when the turn ends (`background_tasks` in the Stop hook input, Claude Code v2.1.145+; on older versions the sound always plays)
+
 ### Platform Details
 
 | OS | Method | Sounds |

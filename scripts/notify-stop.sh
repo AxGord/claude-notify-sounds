@@ -6,6 +6,11 @@ if echo "$INPUT" | grep -q '"hook_event_name":[[:space:]]*"SubagentStop"'; then
   exit 0
 fi
 
+# Skip sound while background tasks/agents are still running — work is not actually finished
+if printf '%s' "$INPUT" | tr -d ' \n\t' | grep -q '"background_tasks":\[{'; then
+  exit 0
+fi
+
 case "$(uname -s)" in
   Darwin)
     afplay /System/Library/Sounds/Basso.aiff &
