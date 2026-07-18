@@ -8,28 +8,18 @@ fi
 
 # Skip sound only when the turn is not a real completion:
 # - subagent/workflow tasks always complete and re-invoke the main agent, so
-#   a first-sighted one still running means the real finish comes later;
+#   any Stop while one is still running is not the real finish — even across
+#   turn boundaries (the agent may wake on a task notification, reply, and
+#   wait again);
 # - shell tasks may never complete (dev servers, watchers), so only a task
 #   launched seconds before the Stop ("started it and now waiting") counts —
 #   see the grace check below.
-# Ids seen at a previous Stop are kept in a per-session state file, so an
-# agent task surviving a turn boundary stops suppressing.
 # The id/type adjacency matches the current payload serializer; if the key
 # order ever changes, nothing matches and the sound plays — fail open.
 NORM=$(printf '%s' "$INPUT" | tr -d ' \n\t')
 if printf '%s' "$NORM" | grep -q '"background_tasks":\[{'; then
-  SESSION=$(printf '%s' "$NORM" | grep -o '"session_id":"[^"]*"' | head -1 | cut -d'"' -f4)
-  IDS=$(printf '%s' "$NORM" | grep -Eo '"id":"[^"]*","type":"(subagent|workflow)"' | cut -d'"' -f4 | sort -u)
-  STATE_DIR="${TMPDIR:-/tmp}/claude-notify-sounds"
-  STATE_FILE="$STATE_DIR/seen-${SESSION:-unknown}"
-  PREV=$(cat "$STATE_FILE" 2>/dev/null)
-  mkdir -p "$STATE_DIR" 2>/dev/null
-  # Unpersistable state would suppress the sound on every turn — fail open
-  if { printf '%s\n' "$IDS" > "$STATE_FILE"; } 2>/dev/null; then
-    NEW=$(comm -23 <(printf '%s\n' "$IDS") <(printf '%s\n' "$PREV" | sort -u))
-    if [ -n "$NEW" ]; then
-      exit 0
-    fi
+  if printf '%s' "$NORM" | grep -Eq '"id":"[^"]*","type":"(subagent|workflow)"'; then
+    exit 0
   fi
 
   # A shell task launched moments before this Stop means the agent started it
