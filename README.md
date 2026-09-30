@@ -3,12 +3,13 @@
 [![npm version](https://img.shields.io/npm/v/claude-notify-sounds.svg)](https://www.npmjs.com/package/claude-notify-sounds)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that plays system sounds to notify you when Claude Code finishes work or needs permission. Supports macOS, Linux, and Windows.
+A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that plays system sounds to notify you when Claude Code finishes work, needs permission, or hits a usage limit. Supports macOS, Linux, and Windows.
 
 ## Features
 
 - Plays a sound when Claude stops working — no need to keep watching the terminal
 - Plays a different sound when Claude needs permission — respond faster to approval prompts
+- Plays an alert when a turn stops on a usage limit — know right away that work is paused
 - Cross-platform: macOS, Linux (PulseAudio/PipeWire), Windows (Git Bash)
 - Falls back to terminal bell when no sound system is available
 
@@ -35,6 +36,7 @@ The plugin uses Claude Code [hooks](https://docs.anthropic.com/en/docs/claude-co
 |------|-------|------|
 | `Stop` | Warning tone | Claude finishes working |
 | `Notification` (permission_prompt) | Ping / message tone | Claude needs permission to proceed |
+| `StopFailure` (rate_limit) | Alert tone | Turn stopped on a usage limit (Claude Code v2.1.78+) |
 
 The stop sound is skipped when work is not actually finished:
 
@@ -48,14 +50,14 @@ Long-lived background shell processes (dev servers, watchers) do not silence the
 
 | OS | Method | Sounds |
 |----|--------|--------|
-| **macOS** | `afplay` | Built-in system sounds (`Basso.aiff`, `Ping.aiff`) |
+| **macOS** | `afplay` | Built-in system sounds (`Basso.aiff`, `Ping.aiff`, `Sosumi.aiff`) |
 | **Linux** | `paplay` / `pw-play` | Freedesktop sound theme (`.oga`) |
 | **Windows** | PowerShell `SoundPlayer` | Windows Media sounds (`.wav`) |
 | **Fallback** | Terminal bell (`\a`) | Default terminal bell |
 
 ## Configuration
 
-To change sounds, edit the scripts in `scripts/` and replace the sound file path:
+To change sounds, edit the `play_sound` call at the end of each `scripts/notify-*.sh` (arguments: macOS, Linux, Windows sound file names):
 
 - **macOS** — available sounds in `/System/Library/Sounds/`
 - **Linux** — freedesktop sounds in `/usr/share/sounds/freedesktop/stereo/`
