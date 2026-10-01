@@ -16,3 +16,4 @@ jobs:
       - run: bash -n scripts/notify-permission.sh
       - run: bash -n scripts/notify-limit.sh
       - run: bash -n scripts/play-sound.sh
+      - run: bash tests/test-notify.sh

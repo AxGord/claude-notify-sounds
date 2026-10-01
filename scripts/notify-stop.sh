@@ -45,4 +45,21 @@ if printf '%s' "$NORM" | grep -q '"background_tasks":\[{'; then
 fi
 
 . "$(dirname "$0")/play-sound.sh"
+
+# A turn the CLI told to wrap up on the usage limit (wrap-up allowance) ends with
+# a normal Stop, not StopFailure — it is the limit stop. The CLI writes that note
+# to the transcript under the turn's promptId with usageLimitNote "wrap_up"
+# ("release" when the limit lifts). Any lookup failure — plain stop sound.
+# Reads raw INPUT, not NORM: stripping whitespace would break paths with spaces.
+json_str() {
+  printf '%s' "$INPUT" | grep -Eo "\"$1\":[[:space:]]*\"[^\"]*\"" | head -1 | sed 's/.*"\([^"]*\)"$/\1/'
+}
+PROMPT_ID=$(json_str prompt_id)
+TRANSCRIPT=$(json_str transcript_path)
+if [ -n "$PROMPT_ID" ] && [ -f "$TRANSCRIPT" ] &&
+  grep -aF "\"promptId\":\"$PROMPT_ID\"" "$TRANSCRIPT" | grep -Eo '"usageLimitNote":"[^"]*"' | tail -1 | grep -q '"wrap_up"'; then
+  play_limit_sound "$(json_str session_id)"
+  exit 0
+fi
+
 play_sound Basso.aiff dialog-warning.oga 'Windows Exclamation.wav'

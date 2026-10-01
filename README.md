@@ -38,6 +38,12 @@ The plugin uses Claude Code [hooks](https://docs.anthropic.com/en/docs/claude-co
 | `Notification` (permission_prompt) | Ping / message tone | Claude needs permission to proceed |
 | `StopFailure` (rate_limit) | Alert tone | Turn stopped on a usage limit (Claude Code v2.1.78+) |
 
+The usage-limit alert plays once per limit stop:
+
+- sub-agents rejected on the limit stay silent — only the main agent's stop counts
+- a turn Claude was told to wrap up on the limit ([wrap-up allowance](https://support.claude.com/en/articles/17040437-claude-code-wrap-up-allowance)) ends with a normal stop, so it plays the alert instead of the stop sound
+- a repeat alert in the same session within 60 seconds stays silent (a wrap-up stop followed by the limit rejecting the next wake-up is one stop)
+
 The stop sound is skipped when work is not actually finished:
 
 - sub-agent completions (`SubagentStop`)
@@ -57,7 +63,7 @@ Long-lived background shell processes (dev servers, watchers) do not silence the
 
 ## Configuration
 
-To change sounds, edit the `play_sound` call at the end of each `scripts/notify-*.sh` (arguments: macOS, Linux, Windows sound file names):
+To change sounds, edit the `play_sound` calls in `scripts/notify-stop.sh`, `scripts/notify-permission.sh` and `play_limit_sound` in `scripts/play-sound.sh` (arguments: macOS, Linux, Windows sound file names):
 
 - **macOS** — available sounds in `/System/Library/Sounds/`
 - **Linux** — freedesktop sounds in `/usr/share/sounds/freedesktop/stereo/`

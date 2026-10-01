@@ -25,3 +25,23 @@ play_sound() {
       ;;
   esac
 }
+
+# Usage: play_limit_sound <session_id>
+# One limit stop can reach both hooks: a wrap-up Stop, then a StopFailure when a
+# task notification wakes the agent into the limit. A repeat within 60 seconds in
+# the same session stays silent.
+play_limit_sound() {
+  case "$1" in
+    ''|*[!A-Za-z0-9_-]*) ;;
+    *)
+      local stamp="${TMPDIR:-/tmp}/claude-notify-sounds-limit-$1"
+      local now last
+      now=$(date +%s)
+      last=$(cat "$stamp" 2>/dev/null)
+      case "$last" in ''|*[!0-9]*) last=0 ;; esac
+      [ $((now - last)) -lt 60 ] && return
+      echo "$now" > "$stamp" 2>/dev/null
+      ;;
+  esac
+  play_sound Sosumi.aiff suspend-error.oga 'Windows Critical Stop.wav'
+}
