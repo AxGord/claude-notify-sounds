@@ -3,10 +3,11 @@
 [![npm version](https://img.shields.io/npm/v/claude-notify-sounds.svg)](https://www.npmjs.com/package/claude-notify-sounds)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that plays system sounds to notify you when Claude Code finishes work, needs permission, or hits a usage limit. Supports macOS, Linux, and Windows.
+A [Claude Code](https://code.claude.com/docs/en/overview) plugin that plays a sound when Claude finishes, needs your permission or hits a usage limit — and stays **silent while background agents or workflows are still running**, so you only hear it when the work is really done. Supports macOS, Linux, and Windows.
 
 ## Features
 
+- Silent while background agents or workflows still run — the sound means the work is truly finished
 - Plays a sound when Claude stops working — no need to keep watching the terminal
 - Plays a different sound when Claude needs permission — respond faster to approval prompts
 - Plays an alert when a turn stops on a usage limit — know right away that work is paused
@@ -15,22 +16,25 @@ A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin that play
 
 ## Quick Start
 
-Install from the Claude Code plugin marketplace:
-
-```
-claude plugin add claude-notify-sounds
-```
-
-Or install manually:
+Install from the official [community marketplace](https://github.com/anthropics/claude-plugins-community):
 
 ```bash
-git clone https://github.com/AxGord/claude-notify-sounds.git
-claude plugin add ./claude-notify-sounds
+claude plugin marketplace add anthropics/claude-plugins-community
+claude plugin install notify-sounds@claude-community
+```
+
+(or inside Claude Code: `/plugin install notify-sounds@claude-community`)
+
+Or straight from this repo:
+
+```bash
+claude plugin marketplace add AxGord/claude-notify-sounds
+claude plugin install notify-sounds@claude-notify-sounds
 ```
 
 ## How It Works
 
-The plugin uses Claude Code [hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) to play sounds on specific events:
+The plugin uses Claude Code [hooks](https://code.claude.com/docs/en/hooks) to play sounds on specific events:
 
 | Hook | Sound | When |
 |------|-------|------|
@@ -74,6 +78,11 @@ To change sounds, edit the `play_sound` calls in `scripts/notify-stop.sh`, `scri
 - **macOS** — no extra dependencies (`afplay` is built-in)
 - **Linux** — `paplay` (PulseAudio/PipeWire) or `pw-play` (PipeWire native); `sound-theme-freedesktop` package for sounds
 - **Windows** — Git Bash or similar bash environment with access to `powershell.exe`
+
+## See also
+
+- [claude-keep-awake](https://github.com/AxGord/claude-keep-awake) — keeps your computer awake (even lid closed on Apple Silicon) while Claude Code works
+- [Claude Workflow](https://axgord.github.io/claude-workflow/) — workflows for Claude Code agents: state machines, gates, a task queue, a shared thread pool and a live map
 
 ## License
 

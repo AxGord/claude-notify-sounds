@@ -1,0 +1,18 @@
+{
+  "name": "claude-notify-sounds",
+  "owner": {
+    "name": "AxGord",
+    "email": "axgord@gmail.com",
+    "url": "https://github.com/AxGord"
+  },
+  "metadata": {
+    "description": "Direct-install marketplace for the notify-sounds plugin"
+  },
+  "plugins": [
+    {
+      "name": "notify-sounds",
+      "source": "./",
+      "description": "Plays system sounds when Claude Code finishes work, needs permission or hits a usage limit; silent while background agents still run. macOS / Linux / Windows."
+    }
+  ]
+}

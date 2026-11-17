@@ -17,5 +17,15 @@
   ],
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "claude-code-hooks",
+    "notifications",
+    "sound",
+    "macos",
+    "linux",
+    "windows"
+  ]
 }
